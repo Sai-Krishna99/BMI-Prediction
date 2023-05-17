@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            margin: 0;
+            background-image: url("/static/BMI_Background.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        h1 {
+            font-size: 32px;
+            text-align: center;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        #video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #prediction-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 255, 0, 0.8);
+            padding: 5px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        #video-player {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #call-to-action {
+            width: 180px;
+            height: 50px;
+            background-color: #006688;
+            /* color: #fff; */
+            font-size: 18px;
+            text-align: center;
+            line-height: 50px;
+            margin-top: 100px;
+            margin-left: 345px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #call-to-action:hover {
+            background-color: #005577;
+        }
+    </style>
+</head>
+<body>
+    <h1>BMI Prediction</h1>
+    <div id="video-container">
+        <div id="prediction-overlay"></div>
+        <video id="video-player" autoplay playsinline></video>
+    </div>
+    <div id="call-to-action">
+        <button id="start-button">Start Video Feed</button>
+        <button id="stop-button" style="display: none;">Stop Video Feed</button>
+    </div>
+
+    <script>
+        var videoPlayer = document.getElementById('video-player');
+        var callToAction = document.getElementById('call-to-action');
+        var startButton = document.getElementById('start-button');
+        var stopButton = document.getElementById('stop-button');
+
+        startButton.addEventListener('click', startVideo);
+        stopButton.addEventListener('click', stopVideo);
+
+        function startVideo() {
+            videoPlayer.src = '/video_feed';
+            videoPlayer.style.display = 'block';
+            callToAction.style.display = 'none';
+            stopButton.style.display = 'block';
+        }
+
+        function stopVideo() {
+            videoPlayer.src = '';
+            videoPlayer.style.display = 'none';
+            callToAction.style.display = 'block';
+            startButton.style.display = 'block';
+            stopButton.style.display = 'none';
+
+            // Hide the prediction overlay when stopping the video
+            var predictionOverlay = document.getElementById('prediction-overlay');
+            predictionOverlay.style.display = 'none';
+        }
+       // Function to handle receiving predictions from the server
+        function receivePrediction(prediction) {
+            var predictionOverlay = document.getElementById('prediction-overlay');
+            predictionOverlay.textContent = prediction;
+            predictionOverlay.style.display = 'block';
+        }
+
+        // Event listener to handle receiving predictions via WebSocket
+        var socket = new WebSocket('ws://' + window.location.host + '/predict');
+        socket.onmessage = function (event) {
+            receivePrediction(event.data);
+        };
+
+        // Close the WebSocket connection when the window is closed or refreshed
+        window.onbeforeunload = function () {
+            socket.close();
+        };
+    </script>
+</body>
+</html>

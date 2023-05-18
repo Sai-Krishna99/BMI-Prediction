@@ -1,6 +1,12 @@
-FROM python:3.9
+FROM python:3.10.9
+
+# Install dependencies for OpenCV
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
+
 COPY . /app
 WORKDIR /app
+
 RUN pip install -r requirements.txt
+
 EXPOSE $PORT
 CMD gunicorn --workers=4 --bind 0.0.0.0:$PORT app:app

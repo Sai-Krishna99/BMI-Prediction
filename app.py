@@ -6,7 +6,7 @@ import tensorflow as tf
 app = Flask(__name__, template_folder='.', static_folder = 'static')
 # Load the trained model
 bmi_model = tf.keras.models.load_model("densenet_model_checkpoint.h5")
-gender_model = tf.keras.models.load_model("inception3_model_checkpoint.h5")
+gender_model = tf.keras.models.load_model('inception3_model_checkpoint.h5')
 # Load the face cascade for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
@@ -35,11 +35,11 @@ def generate_frames():
 
             # Predict BMI
             bmi_prediction = bmi_model.predict(face_image)
-            bmi_value = bmi_prediction[0]  # Assuming your model predicts a single value
+            bmi_value = bmi_prediction[0]  
             #Predict Gender
             gender_prediction = gender_model.predict(face_image)
             gender_value = gender_prediction
-            if gender_value <0.5:
+            if gender_value <0.5: 
                 gender_value = 'Female'
             else:
                 gender_value = 'Male'
@@ -64,10 +64,10 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/video_feed')
+@app.route('/video_feed', methods=['GET'])
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(ssl_context= 'adhoc',host='0.0.0.0', port=8000)

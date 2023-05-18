@@ -8,8 +8,7 @@
             font-family: 'Roboto', sans-serif;
             font-size: 16px;
             margin: 0;
-            background-image: url("/static/BMI_Background.jpg") ;
-            /* url('https://i.imgur.com/6FTK7Y8.jpg'); */
+            background-image: url("/static/BMI_Background.jpg");
             background-repeat: no-repeat;
             background-size: cover;
         }
@@ -46,54 +45,41 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        #call-to-action {
-            width: 180px;
-            height: 50px;
+        #open-video-button {
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+            height: 40px;
             background-color: #006688;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
+            border-width: 0px;
             text-align: center;
-            line-height: 50px;
-            margin-top: 10vh;
-            margin-left: auto;
-            margin-right: auto;
+            line-height: 40px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
-        #call-to-action:hover {
+        #open-video-button:hover {
             background-color: #005577;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 24px;
-                margin-top: 2vh;
-            }
-
-            #video-container {
-                margin-top: 5vh;
-            }
-
-            #call-to-action {
-                width: 150px;
-                height: 40px;
-                font-size: 16px;
-                line-height: 40px;
-                margin-top: 5vh;
-            }
-        }
     </style>
 </head>
 <body>
     <h1>BMI Prediction</h1>
     <div id="video-container">
         <div id="prediction-overlay"></div>
-        <img id="video-player" src="{{ url_for('video_feed') }}">
+        <!-- <img id="video-player" src="{{ url_for('video_feed') }}"> -->
     </div>
-    <!-- <div id="call-to-action">
-        Predict BMI
-    </div> -->
+
+    <button id="open-video-button" onclick="openVideo()">Open Video</button>
+
+    <script>
+        function openVideo() {
+            window.open('{{ url_for("video_feed") }}', '_blank');
+        }
+    </script>
 </body>
 </html>
